@@ -121,7 +121,6 @@ def build_calendar_html(selected_date, reminders_data):
     html += "</table></div>"
     return html
 
-# ── CSS ───────────────────────────────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -160,11 +159,13 @@ p,label,span,div   { color:#c8d8e8 !important; }
     color:white !important; border:none !important;
     border-radius:10px !important; font-weight:600 !important;
     box-shadow:0 4px 15px #4a9eff33 !important;
+    width:100% !important;
 }
 .stDownloadButton > button {
     background:linear-gradient(135deg,#1dd1a1,#00b894) !important;
     color:white !important; border:none !important;
     border-radius:10px !important; font-weight:600 !important;
+    width:100% !important;
 }
 [data-testid="metric-container"] {
     background:linear-gradient(135deg,#16213e,#1a2744) !important;
@@ -309,75 +310,74 @@ with st.sidebar:
 
 # ── Page: Calendar & Reminders ───────────────────────
 if page == "📅 Calendar & Reminders":
-    col1, col2 = st.columns([1, 1.5])
 
-    with col1:
-        st.markdown('<div class="section-title">📅 Select Date</div>',
-                    unsafe_allow_html=True)
-        selected_date  = st.date_input("d", value=date.today(),
-                                       label_visibility="collapsed")
-        date_str       = selected_date.strftime("%Y-%m-%d")
-        reminders_data = load_json(REMINDERS_FILE)
+    # On mobile: single column. On laptop: two columns.
+    # We detect by using full width and letting CSS handle it.
+    st.markdown('<div class="section-title">📅 Select Date</div>',
+                unsafe_allow_html=True)
+    selected_date  = st.date_input("d", value=date.today(),
+                                   label_visibility="collapsed")
+    date_str       = selected_date.strftime("%Y-%m-%d")
+    reminders_data = load_json(REMINDERS_FILE)
 
-        st.markdown(f'<div class="section-title">📆 {selected_date.strftime("%B %Y")}</div>',
-                    unsafe_allow_html=True)
-        st.markdown(build_calendar_html(selected_date, reminders_data),
-                    unsafe_allow_html=True)
-        st.markdown("""
-        <div style="font-size:11px;color:#8899aa!important;margin-top:5px">
-            🔵 Today &nbsp; 🟢 Selected &nbsp; 🟠 Reminder &nbsp; 🔴 Weekend
-        </div>
-        """, unsafe_allow_html=True)
+    st.markdown(f'<div class="section-title">📆 {selected_date.strftime("%B %Y")}</div>',
+                unsafe_allow_html=True)
+    st.markdown(build_calendar_html(selected_date, reminders_data),
+                unsafe_allow_html=True)
+    st.markdown("""
+    <div style="font-size:11px;color:#8899aa!important;margin:5px 0 15px">
+        🔵 Today &nbsp; 🟢 Selected &nbsp; 🟠 Reminder &nbsp; 🔴 Weekend
+    </div>
+    """, unsafe_allow_html=True)
 
-    with col2:
-        st.markdown(f'<div class="section-title">📝 Reminders — {date_str}</div>',
-                    unsafe_allow_html=True)
-        reminders     = load_json(REMINDERS_FILE)
-        day_reminders = reminders.get(date_str, [])
+    st.divider()
 
-        if day_reminders:
-            for i, r in enumerate(day_reminders):
-                cls = "reminder-card"
-                if "🔴 High"     in r: cls += " high"
-                elif "🟡 Medium"  in r: cls += " medium"
-                elif "🟢 Low"     in r: cls += " low"
-                elif "📓 Journal" in r: cls += " journal"
-                c1, c2 = st.columns([5, 1])
-                with c1:
-                    st.markdown(f'<div class="{cls}">{r}</div>',
-                                unsafe_allow_html=True)
-                with c2:
-                    if st.button("🗑", key=f"del_{i}_{date_str}"):
-                        reminders[date_str].remove(r)
-                        if not reminders[date_str]:
-                            del reminders[date_str]
-                        save_json(REMINDERS_FILE, reminders)
-                        st.rerun()
+    st.markdown(f'<div class="section-title">📝 Reminders — {date_str}</div>',
+                unsafe_allow_html=True)
+    reminders     = load_json(REMINDERS_FILE)
+    day_reminders = reminders.get(date_str, [])
+
+    if day_reminders:
+        for i, r in enumerate(day_reminders):
+            cls = "reminder-card"
+            if "🔴 High"     in r: cls += " high"
+            elif "🟡 Medium"  in r: cls += " medium"
+            elif "🟢 Low"     in r: cls += " low"
+            elif "📓 Journal" in r: cls += " journal"
+            c1, c2 = st.columns([5, 1])
+            with c1:
+                st.markdown(f'<div class="{cls}">{r}</div>',
+                            unsafe_allow_html=True)
+            with c2:
+                if st.button("🗑", key=f"del_{i}_{date_str}"):
+                    reminders[date_str].remove(r)
+                    if not reminders[date_str]:
+                        del reminders[date_str]
+                    save_json(REMINDERS_FILE, reminders)
+                    st.rerun()
+    else:
+        st.info("📭 No reminders for this day")
+
+    st.divider()
+    st.markdown('<div class="section-title">➕ Add Reminder</div>',
+                unsafe_allow_html=True)
+
+    priority = st.selectbox("Priority", ["🟡 Medium", "🔴 High", "🟢 Low"])
+    time_val = st.text_input("⏰ Time (HH:MM)", placeholder="e.g. 14:30")
+    note     = st.text_input("📌 Note", placeholder="e.g. Team Meeting")
+
+    if st.button("➕ Add Reminder", type="primary", use_container_width=True):
+        if note.strip():
+            rt = (f"{time_val} | {priority} | {note}"
+                  if time_val.strip() else f"{priority} | {note}")
+            if date_str not in reminders:
+                reminders[date_str] = []
+            reminders[date_str].append(rt)
+            save_json(REMINDERS_FILE, reminders)
+            st.success("✅ Reminder added!")
+            st.rerun()
         else:
-            st.info("📭 No reminders for this day")
-
-        st.divider()
-        st.markdown('<div class="section-title">➕ Add Reminder</div>',
-                    unsafe_allow_html=True)
-        priority = st.selectbox("Priority", ["🟡 Medium", "🔴 High", "🟢 Low"])
-        c1, c2   = st.columns(2)
-        with c1:
-            time_val = st.text_input("⏰ Time (HH:MM)", placeholder="14:30")
-        with c2:
-            note = st.text_input("📌 Note", placeholder="Team Meeting")
-
-        if st.button("➕ Add Reminder", type="primary", use_container_width=True):
-            if note.strip():
-                rt = (f"{time_val} | {priority} | {note}"
-                      if time_val.strip() else f"{priority} | {note}")
-                if date_str not in reminders:
-                    reminders[date_str] = []
-                reminders[date_str].append(rt)
-                save_json(REMINDERS_FILE, reminders)
-                st.success("✅ Reminder added!")
-                st.rerun()
-            else:
-                st.error("Please enter a note!")
+            st.error("Please enter a note!")
 
 # ── Page: Mood Tracker ───────────────────────────────
 elif page == "😊 Mood Tracker":
@@ -482,9 +482,8 @@ elif page == "🎂 Birthday Manager":
     st.divider()
     st.markdown('<div class="section-title">➕ Add Birthday</div>',
                 unsafe_allow_html=True)
-    c1,c2 = st.columns(2)
-    with c1: new_name = st.text_input("👤 Name")
-    with c2: new_date = st.date_input("🎂 Date", value=date.today())
+    new_name = st.text_input("👤 Name")
+    new_date = st.date_input("🎂 Date", value=date.today())
     if st.button("🎂 Save Birthday", type="primary", use_container_width=True):
         if new_name.strip():
             birthdays[new_name] = new_date.strftime("%Y-%m-%d")
@@ -524,38 +523,40 @@ elif page == "📊 Stats & Analytics":
     total       = sum(len(v) for v in reminders.values())
     this_month  = datetime.today().strftime("%Y-%m")
     month_total = sum(len(v) for k,v in reminders.items() if k.startswith(this_month))
-    c1,c2,c3,c4 = st.columns(4)
-    c1.metric("📝 Total", total)
+
+    c1,c2 = st.columns(2)
+    c1.metric("📝 Total Reminders", total)
     c2.metric("📅 This Month", month_total)
+    c3,c4 = st.columns(2)
     c3.metric("🎂 Birthdays", len(birthdays))
     c4.metric("😊 Moods", len(moods))
+
     st.divider()
-    col1,col2 = st.columns(2)
-    with col1:
-        st.markdown('<div class="section-title">😊 Mood History</div>',
-                    unsafe_allow_html=True)
-        if moods:
-            for ds,mood in sorted(moods.items(),reverse=True)[:10]:
-                st.markdown(f"""
-                <div class="stats-box">
-                    <span style="color:#8899aa!important;font-size:12px">{ds}</span>
-                    &nbsp;{mood['emoji']}
-                    <b style="color:white!important">{mood['label']}</b>
-                </div>""", unsafe_allow_html=True)
-        else:
-            st.info("No mood entries yet")
-    with col2:
-        st.markdown('<div class="section-title">📝 Recent Reminders</div>',
-                    unsafe_allow_html=True)
-        if reminders:
-            for ds,rems in sorted(reminders.items(),reverse=True)[:5]:
-                st.markdown(f"""
-                <div class="stats-box">
-                    <div style="color:#4a9eff!important;font-size:12px;font-weight:600">{ds}</div>
-                    {"".join(f'<div style="color:#c8d8e8!important;font-size:13px">• {r}</div>' for r in rems)}
-                </div>""", unsafe_allow_html=True)
-        else:
-            st.info("No reminders yet")
+    st.markdown('<div class="section-title">😊 Mood History</div>',
+                unsafe_allow_html=True)
+    if moods:
+        for ds,mood in sorted(moods.items(),reverse=True)[:10]:
+            st.markdown(f"""
+            <div class="stats-box">
+                <span style="color:#8899aa!important;font-size:12px">{ds}</span>
+                &nbsp;{mood['emoji']}
+                <b style="color:white!important">{mood['label']}</b>
+            </div>""", unsafe_allow_html=True)
+    else:
+        st.info("No mood entries yet")
+
+    st.divider()
+    st.markdown('<div class="section-title">📝 Recent Reminders</div>',
+                unsafe_allow_html=True)
+    if reminders:
+        for ds,rems in sorted(reminders.items(),reverse=True)[:5]:
+            st.markdown(f"""
+            <div class="stats-box">
+                <div style="color:#4a9eff!important;font-size:12px;font-weight:600">{ds}</div>
+                {"".join(f'<div style="color:#c8d8e8!important;font-size:13px">• {r}</div>' for r in rems)}
+            </div>""", unsafe_allow_html=True)
+    else:
+        st.info("No reminders yet")
 
 # ── Page: Export ─────────────────────────────────────
 elif page == "📤 Export Data":
