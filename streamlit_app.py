@@ -49,70 +49,78 @@ def build_calendar_html(selected_date, reminders_data):
     cal = calendar.monthcalendar(selected_date.year, selected_date.month)
     html = """
     <style>
-    .cal-wrap { width: 100%; overflow-x: auto; }
+    .cal-wrap { width: 100%; overflow-x: auto; margin: 10px 0; }
     .cal-table {
         width: 100%;
         border-collapse: separate;
-        border-spacing: 4px;
+        border-spacing: 3px;
         table-layout: fixed;
     }
     .cal-table th {
         text-align: center;
-        padding: 8px 2px;
+        padding: 10px 2px;
         color: #4a9eff;
-        font-size: 13px;
-        font-weight: bold;
-        background: #16213e;
+        font-size: 12px;
+        font-weight: 700;
+        font-family: 'Segoe UI', sans-serif;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        background: #1a2744;
         border-radius: 6px;
     }
     .cal-table td {
         text-align: center;
-        padding: 6px 2px;
+        padding: 8px 2px;
         font-size: 14px;
-        color: #eaeaea;
-        background: #1a1a2e;
-        border-radius: 6px;
-        min-width: 32px;
-        height: 36px;
+        color: #c8d8e8;
+        background: #16213e;
+        border-radius: 8px;
+        height: 38px;
         vertical-align: middle;
+        font-family: 'Segoe UI', sans-serif;
+        transition: background 0.2s;
     }
+    .cal-table td:hover { background: #1e3a5f; }
     .day-today {
         background: #4a9eff !important;
         color: white !important;
         border-radius: 50%;
-        width: 28px;
-        height: 28px;
+        width: 30px; height: 30px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         font-weight: bold;
+        box-shadow: 0 0 10px #4a9eff88;
     }
     .day-selected {
         background: #1dd1a1 !important;
         color: white !important;
         border-radius: 50%;
-        width: 28px;
-        height: 28px;
+        width: 30px; height: 30px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         font-weight: bold;
+        box-shadow: 0 0 10px #1dd1a188;
     }
-    .day-reminder { color: #ff9f43 !important; font-weight: bold; }
-    .day-weekend  { color: #ff6b6b !important; }
-    .day-empty    { color: #333 !important; background: transparent !important; }
+    .day-reminder {
+        color: #ff9f43 !important;
+        font-weight: bold;
+        position: relative;
+    }
+    .day-weekend { color: #ff6b6b !important; }
+    .day-empty { color: transparent !important; background: transparent !important; }
     @media (max-width: 600px) {
-        .cal-table th { font-size: 11px; padding: 5px 1px; }
-        .cal-table td { font-size: 12px; padding: 4px 1px; height: 30px; }
-        .day-today, .day-selected { width: 24px; height: 24px; }
+        .cal-table th { font-size: 10px; padding: 6px 1px; }
+        .cal-table td { font-size: 12px; padding: 5px 1px; height: 30px; }
+        .day-today, .day-selected { width: 24px; height: 24px; font-size: 11px; }
     }
     </style>
     <div class="cal-wrap">
-    <table class="cal-table">
-    <tr>
-        <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th>
-        <th style="color:#ff6b6b">Sat</th>
-        <th style="color:#ff6b6b">Sun</th>
+    <table class="cal-table"><tr>
+        <th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th>
+        <th style="color:#ff6b6b">SAT</th>
+        <th style="color:#ff6b6b">SUN</th>
     </tr>
     """
     for week in cal:
@@ -127,7 +135,6 @@ def build_calendar_html(selected_date, reminders_data):
                 is_today     = day_date == date.today()
                 is_selected  = day_date == selected_date
                 is_weekend   = i >= 5
-
                 if is_today:
                     html += f'<td><span class="day-today">{day}</span></td>'
                 elif is_selected:
@@ -142,132 +149,247 @@ def build_calendar_html(selected_date, reminders_data):
     html += "</table></div>"
     return html
 
+# ── Global CSS ───────────────────────────────────────
 st.markdown("""
 <style>
-    .stApp { background-color: #1a1a2e !important; color: #eaeaea !important; }
-    [data-testid="stSidebar"] {
-        background-color: #16213e !important;
-        border-right: 1px solid #4a9eff33;
-    }
-    [data-testid="stSidebar"] * { color: #eaeaea !important; }
-    h1,h2,h3,h4,h5,h6,p,label,span,div { color: #eaeaea !important; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-    .stTextInput input, .stTextArea textarea {
-        background-color: #16213e !important;
-        color: #eaeaea !important;
-        border: 1px solid #4a9eff55 !important;
-        border-radius: 8px !important;
-    }
-    .stSelectbox select, [data-testid="stSelectbox"] > div {
-        background-color: #16213e !important;
-        color: #eaeaea !important;
-        border: 1px solid #4a9eff55 !important;
-    }
-    .stDateInput input {
-        background-color: #16213e !important;
-        color: #eaeaea !important;
-        border: 1px solid #4a9eff55 !important;
-    }
-    .stButton button {
-        background-color: #4a9eff !important;
-        color: white !important;
-        border: none !important;
-        border-radius: 8px !important;
-        font-weight: bold !important;
-    }
-    .stDownloadButton button {
-        background-color: #1dd1a1 !important;
-        color: white !important;
-        border-radius: 8px !important;
-        font-weight: bold !important;
-    }
-    [data-testid="stMetricValue"] { color: #4a9eff !important; font-size: 2rem !important; }
-    [data-testid="stMetricLabel"] { color: #aaaaaa !important; }
-    [data-testid="metric-container"] {
-        background-color: #16213e !important;
-        border-radius: 12px !important;
-        padding: 15px !important;
-        border: 1px solid #4a9eff33 !important;
-    }
-    .stAlert { background-color: #16213e !important; border-radius: 10px !important; }
-    hr { border-color: #4a9eff33 !important; }
+* { font-family: 'Inter', 'Segoe UI', sans-serif !important; }
 
-    .reminder-card {
-        background: #16213e;
-        border-radius: 10px;
-        padding: 12px 16px;
-        margin: 6px 0;
-        border-left: 4px solid #4a9eff;
-        color: #eaeaea !important;
-    }
-    .high    { border-left-color: #ff6b6b !important; }
-    .medium  { border-left-color: #ff9f43 !important; }
-    .low     { border-left-color: #1dd1a1 !important; }
-    .journal { border-left-color: #a29bfe !important; }
+/* Background */
+.stApp {
+    background: linear-gradient(135deg, #0d1117 0%, #0f1923 50%, #0d1117 100%) !important;
+    color: #eaeaea !important;
+}
 
-    .quote-box {
-        background: #16213e;
-        border-left: 4px solid #4a9eff;
-        padding: 12px 20px;
-        border-radius: 10px;
-        margin-bottom: 15px;
-        color: #aaaaaa !important;
-        font-style: italic;
-    }
-    .mood-btn {
-        background: #16213e;
-        border-radius: 10px;
-        padding: 10px;
-        text-align: center;
-        border: 1px solid #4a9eff33;
-        margin: 4px;
-    }
-    .birthday-card {
-        background: #16213e;
-        border-radius: 10px;
-        padding: 12px;
-        margin: 5px 0;
-        border-left: 4px solid #fd79a8;
-    }
-    .header-box {
-        background: linear-gradient(135deg, #16213e, #0f3460);
-        border-radius: 15px;
-        padding: 20px 30px;
-        margin-bottom: 20px;
-        border: 1px solid #4a9eff33;
-    }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #16213e; }
-    ::-webkit-scrollbar-thumb { background: #4a9eff; border-radius: 3px; }
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #0f1923 0%, #16213e 100%) !important;
+    border-right: 1px solid #4a9eff22 !important;
+}
+[data-testid="stSidebar"] * { color: #c8d8e8 !important; }
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 { color: white !important; }
 
-    @media (max-width: 768px) {
-        .header-box { padding: 15px !important; }
-        .header-box h1 { font-size: 1.3rem !important; }
-        .reminder-card { font-size: 13px !important; padding: 8px 10px !important; }
-    }
+/* All text */
+h1,h2,h3,h4,h5,h6 { color: white !important; font-weight: 700 !important; }
+p, label, span, div { color: #c8d8e8 !important; }
+
+/* Inputs */
+.stTextInput input, .stTextArea textarea {
+    background: #16213e !important;
+    color: #eaeaea !important;
+    border: 1px solid #4a9eff44 !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+    padding: 10px !important;
+}
+.stTextInput input:focus, .stTextArea textarea:focus {
+    border-color: #4a9eff !important;
+    box-shadow: 0 0 0 2px #4a9eff22 !important;
+}
+[data-testid="stDateInput"] input {
+    background: #16213e !important;
+    color: #eaeaea !important;
+    border: 1px solid #4a9eff44 !important;
+    border-radius: 10px !important;
+}
+[data-testid="stSelectbox"] > div > div {
+    background: #16213e !important;
+    color: #eaeaea !important;
+    border: 1px solid #4a9eff44 !important;
+    border-radius: 10px !important;
+}
+
+/* Buttons */
+.stButton > button {
+    background: linear-gradient(135deg, #4a9eff, #2980b9) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    padding: 10px 20px !important;
+    transition: all 0.2s !important;
+    box-shadow: 0 4px 15px #4a9eff33 !important;
+}
+.stButton > button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px #4a9eff55 !important;
+}
+.stDownloadButton > button {
+    background: linear-gradient(135deg, #1dd1a1, #00b894) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+}
+
+/* Metrics */
+[data-testid="metric-container"] {
+    background: linear-gradient(135deg, #16213e, #1a2744) !important;
+    border-radius: 15px !important;
+    padding: 20px !important;
+    border: 1px solid #4a9eff33 !important;
+    box-shadow: 0 4px 20px #00000044 !important;
+}
+[data-testid="stMetricValue"] { color: #4a9eff !important; font-size: 2rem !important; font-weight: 700 !important; }
+[data-testid="stMetricLabel"] { color: #8899aa !important; font-size: 12px !important; }
+
+/* Alerts */
+.stAlert { background: #16213e !important; border-radius: 12px !important; border: 1px solid #4a9eff22 !important; }
+hr { border-color: #4a9eff22 !important; margin: 20px 0 !important; }
+
+/* Cards */
+.header-box {
+    background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+    border-radius: 20px;
+    padding: 25px 35px;
+    margin-bottom: 20px;
+    border: 1px solid #4a9eff33;
+    box-shadow: 0 8px 32px #00000055;
+    position: relative;
+    overflow: hidden;
+}
+.header-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, #4a9eff11, transparent);
+    border-radius: 50%;
+}
+.quote-box {
+    background: linear-gradient(135deg, #16213e, #1a2744);
+    border-left: 3px solid #4a9eff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    color: #8899aa !important;
+    font-style: italic;
+    font-size: 13px;
+    box-shadow: 0 2px 10px #00000033;
+}
+.reminder-card {
+    background: linear-gradient(135deg, #16213e, #1a2744);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin: 8px 0;
+    border-left: 4px solid #4a9eff;
+    color: #eaeaea !important;
+    font-size: 14px;
+    box-shadow: 0 2px 10px #00000033;
+    transition: transform 0.2s;
+}
+.reminder-card:hover { transform: translateX(3px); }
+.high    { border-left-color: #ff6b6b !important; }
+.medium  { border-left-color: #ff9f43 !important; }
+.low     { border-left-color: #1dd1a1 !important; }
+.journal { border-left-color: #a29bfe !important; }
+
+.mood-btn {
+    background: linear-gradient(135deg, #16213e, #1a2744);
+    border-radius: 12px;
+    padding: 12px 8px;
+    text-align: center;
+    border: 1px solid #4a9eff33;
+    margin: 4px 0;
+    box-shadow: 0 2px 10px #00000033;
+    transition: all 0.2s;
+}
+.mood-btn:hover {
+    border-color: #4a9eff;
+    transform: translateY(-2px);
+}
+.birthday-card {
+    background: linear-gradient(135deg, #16213e, #1a2744);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin: 8px 0;
+    border-left: 4px solid #fd79a8;
+    color: #eaeaea !important;
+    box-shadow: 0 2px 10px #00000033;
+}
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white !important;
+    margin: 15px 0 10px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #4a9eff22;
+}
+.stats-box {
+    background: linear-gradient(135deg, #16213e, #1a2744);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid #4a9eff22;
+    margin: 5px 0;
+}
+.footer-bar {
+    background: linear-gradient(135deg, #16213e, #0f3460);
+    border-radius: 12px;
+    padding: 10px 20px;
+    margin-top: 20px;
+    border: 1px solid #4a9eff22;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #8899aa !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #0d1117; }
+::-webkit-scrollbar-thumb { background: #4a9eff66; border-radius: 3px; }
+
+/* Mobile */
+@media (max-width: 768px) {
+    .header-box { padding: 15px 20px !important; }
+    .header-box h1 { font-size: 1.3rem !important; }
+    .reminder-card { font-size: 12px !important; padding: 10px 12px !important; }
+    .mood-btn { padding: 8px 4px !important; }
+    [data-testid="metric-container"] { padding: 12px !important; }
+    [data-testid="stMetricValue"] { font-size: 1.5rem !important; }
+}
 </style>
 """, unsafe_allow_html=True)
 
 # ── Header ───────────────────────────────────────────
-st.markdown("""
+now = datetime.now()
+st.markdown(f"""
 <div class="header-box">
-    <h1 style="margin:0;color:white!important;">📅 Calendar & Reminder App</h1>
-    <p style="margin:0;color:#aaaaaa!important;">Stay organized, never miss a thing!</p>
+    <h1 style="margin:0;color:white!important;font-size:1.8rem;font-weight:800;letter-spacing:-0.5px">
+        📅 Calendar & Reminder App
+    </h1>
+    <p style="margin:4px 0 0 0;color:#8899aa!important;font-size:0.9rem">
+        🕐 {now.strftime('%A, %d %B %Y  |  %H:%M')}
+    </p>
 </div>
 """, unsafe_allow_html=True)
 
 quote, author = get_quote()
 st.markdown(f"""
 <div class="quote-box">
-    💬 "{quote}" — <b>{author}</b>
+    💬 <i>"{quote}"</i> — <b style="color:#4a9eff">{author}</b>
 </div>
 """, unsafe_allow_html=True)
 
 # ── Sidebar ──────────────────────────────────────────
 with st.sidebar:
-    st.markdown("## 🗂️ Navigation")
+    st.markdown("""
+    <div style="text-align:center;padding:10px 0 20px">
+        <div style="font-size:2.5rem">📅</div>
+        <div style="font-weight:700;font-size:1rem;color:white!important">Calendar App</div>
+        <div style="font-size:11px;color:#8899aa!important">Stay Organized</div>
+    </div>
+    """, unsafe_allow_html=True)
+
     page = st.radio(
-        "Go to",
+        "Navigation",
         ["📅 Calendar & Reminders",
          "😊 Mood Tracker",
          "🎂 Birthday Manager",
@@ -275,41 +397,62 @@ with st.sidebar:
          "📤 Export Data"],
         label_visibility="collapsed"
     )
+
     st.divider()
-    st.markdown(f"🕐 **{datetime.now().strftime('%d %b %Y')}**")
-    st.markdown(f"⏰ **{datetime.now().strftime('%H:%M')}**")
-    st.divider()
-    moods_sb = load_json(MOODS_FILE)
+
+    moods_sb  = load_json(MOODS_FILE)
     today_str = datetime.today().strftime("%Y-%m-%d")
-    if today_str in moods_sb:
-        m = moods_sb[today_str]
-        st.markdown(f"**Today's Mood:** {m['emoji']} {m['label']}")
-    else:
-        st.markdown("**Today's Mood:** Not logged yet")
+    mood_today = moods_sb.get(today_str)
+
+    st.markdown(f"""
+    <div style="background:#1a2744;border-radius:12px;padding:12px 15px;margin:5px 0;border:1px solid #4a9eff22">
+        <div style="font-size:11px;color:#8899aa!important;margin-bottom:4px">TODAY'S MOOD</div>
+        <div style="font-size:1.1rem;color:white!important">
+            {f"{mood_today['emoji']} {mood_today['label']}" if mood_today else "Not logged yet"}
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div style="background:#1a2744;border-radius:12px;padding:12px 15px;margin:5px 0;border:1px solid #4a9eff22">
+        <div style="font-size:11px;color:#8899aa!important;margin-bottom:4px">DATE</div>
+        <div style="font-size:0.95rem;color:white!important">
+            {now.strftime('%d %b %Y')}
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
     st.divider()
-    st.markdown("🔵 Today &nbsp; 🟠 Has reminder &nbsp; 🟢 Selected")
+    st.markdown("""
+    <div style="font-size:11px;color:#8899aa!important;line-height:1.8">
+        🔵 Today &nbsp;|&nbsp; 🟢 Selected<br>
+        🟠 Has reminder &nbsp;|&nbsp; 🔴 Weekend
+    </div>
+    """, unsafe_allow_html=True)
 
 # ── Page: Calendar & Reminders ───────────────────────
 if page == "📅 Calendar & Reminders":
     col1, col2 = st.columns([1, 1.5])
 
     with col1:
-        st.markdown("### 📅 Select Date")
+        st.markdown('<div class="section-title">📅 Select Date</div>',
+                    unsafe_allow_html=True)
         selected_date = st.date_input(
             "date", value=date.today(),
             label_visibility="collapsed"
         )
-        date_str = selected_date.strftime("%Y-%m-%d")
+        date_str       = selected_date.strftime("%Y-%m-%d")
         reminders_data = load_json(REMINDERS_FILE)
 
-        st.markdown(f"#### 📆 {selected_date.strftime('%B %Y')}")
+        st.markdown(f'<div class="section-title">📆 {selected_date.strftime("%B %Y")}</div>',
+                    unsafe_allow_html=True)
         st.markdown(build_calendar_html(selected_date, reminders_data),
                     unsafe_allow_html=True)
-        st.markdown("🔵 Today &nbsp; 🟢 Selected &nbsp; 🟠 Has reminder")
 
     with col2:
-        st.markdown(f"### 📝 Reminders for {date_str}")
-        reminders = load_json(REMINDERS_FILE)
+        st.markdown(f'<div class="section-title">📝 Reminders — {date_str}</div>',
+                    unsafe_allow_html=True)
+        reminders     = load_json(REMINDERS_FILE)
         day_reminders = reminders.get(date_str, [])
 
         if day_reminders:
@@ -334,22 +477,22 @@ if page == "📅 Calendar & Reminders":
             st.info("📭 No reminders for this day")
 
         st.divider()
-        st.markdown("#### ➕ Add Reminder")
+        st.markdown('<div class="section-title">➕ Add Reminder</div>',
+                    unsafe_allow_html=True)
         priority = st.selectbox("Priority", ["🟡 Medium", "🔴 High", "🟢 Low"])
-        c1, c2 = st.columns(2)
+        c1, c2   = st.columns(2)
         with c1:
-            time_val = st.text_input("⏰ Time (HH:MM)", placeholder="e.g. 14:30")
+            time_val = st.text_input("⏰ Time (HH:MM)", placeholder="14:30")
         with c2:
-            note = st.text_input("📌 Note", placeholder="e.g. Team Meeting")
+            note = st.text_input("📌 Note", placeholder="Team Meeting")
 
         if st.button("➕ Add Reminder", type="primary", use_container_width=True):
             if note.strip():
-                reminder_text = (f"{time_val} | {priority} | {note}"
-                                 if time_val.strip()
-                                 else f"{priority} | {note}")
+                rt = (f"{time_val} | {priority} | {note}"
+                      if time_val.strip() else f"{priority} | {note}")
                 if date_str not in reminders:
                     reminders[date_str] = []
-                reminders[date_str].append(reminder_text)
+                reminders[date_str].append(rt)
                 save_json(REMINDERS_FILE, reminders)
                 st.success("✅ Reminder added!")
                 st.rerun()
@@ -358,7 +501,8 @@ if page == "📅 Calendar & Reminders":
 
 # ── Page: Mood Tracker ───────────────────────────────
 elif page == "😊 Mood Tracker":
-    st.markdown("### 😊 How are you feeling today?")
+    st.markdown('<div class="section-title">😊 How are you feeling today?</div>',
+                unsafe_allow_html=True)
 
     MOODS = [
         ("😄", "Happy",    "#f9ca24"),
@@ -384,16 +528,15 @@ elif page == "😊 Mood Tracker":
     existing   = moods_data.get(today_str)
 
     if existing:
-        st.success(f"Today's mood: {existing['emoji']} **{existing['label']}** — {MOOD_MESSAGES.get(existing['label'], '')}")
+        st.success(f"{existing['emoji']} **{existing['label']}** — {MOOD_MESSAGES.get(existing['label'], '')}")
 
-    st.markdown("#### Select your mood:")
     cols = st.columns(4)
     for i, (emoji, label, color) in enumerate(MOODS):
         with cols[i % 4]:
             st.markdown(f"""
             <div class="mood-btn">
                 <div style="font-size:2rem">{emoji}</div>
-                <div style="font-size:0.8rem">{label}</div>
+                <div style="font-size:0.75rem;color:#8899aa!important">{label}</div>
             </div>
             """, unsafe_allow_html=True)
             if st.button("Select", key=f"mood_{label}", use_container_width=True):
@@ -403,15 +546,14 @@ elif page == "😊 Mood Tracker":
                 st.rerun()
 
     st.divider()
-    st.markdown("### 📓 Journal")
+    st.markdown('<div class="section-title">📓 Journal — Write about your day</div>',
+                unsafe_allow_html=True)
     st.caption("💡 Your journal will appear in today's reminder list!")
 
     mood_notes    = load_json(MOOD_NOTES_FILE)
     existing_note = mood_notes.get(today_str, "")
     journal_text  = st.text_area(
-        "Write your thoughts...",
-        value=existing_note,
-        height=200,
+        "journal", value=existing_note, height=200,
         label_visibility="collapsed",
         placeholder="Write about your day here..."
     )
@@ -437,11 +579,13 @@ elif page == "😊 Mood Tracker":
 
 # ── Page: Birthday Manager ───────────────────────────
 elif page == "🎂 Birthday Manager":
-    st.markdown("### 🎂 Birthday Manager")
+    st.markdown('<div class="section-title">🎂 Birthday Manager</div>',
+                unsafe_allow_html=True)
     birthdays = load_json(BIRTHDAYS_FILE)
     today     = datetime.today()
 
-    st.markdown("#### 🔔 Upcoming (next 30 days)")
+    st.markdown('<div class="section-title">🔔 Upcoming (next 30 days)</div>',
+                unsafe_allow_html=True)
     upcoming = []
     for name, ds in birthdays.items():
         try:
@@ -459,17 +603,20 @@ elif page == "🎂 Birthday Manager":
     if upcoming:
         for name, ds, days_left, age in sorted(upcoming, key=lambda x: x[2]):
             if days_left == 0:
-                st.success(f"🎉 **TODAY** — {name} turns {age}!")
+                st.success(f"🎉 TODAY — {name} turns {age}!")
             else:
                 st.markdown(f"""
                 <div class="birthday-card">
-                    🎂 <b>{name}</b> — {ds} | In {days_left} days | Turns {age}
+                    🎂 <b style="color:white!important">{name}</b>
+                    <span style="color:#8899aa!important;font-size:12px"> — {ds}</span><br>
+                    <small style="color:#fd79a8!important">In {days_left} days · Turns {age}</small>
                 </div>""", unsafe_allow_html=True)
     else:
         st.info("No upcoming birthdays in next 30 days")
 
     st.divider()
-    st.markdown("#### ➕ Add Birthday")
+    st.markdown('<div class="section-title">➕ Add Birthday</div>',
+                unsafe_allow_html=True)
     c1, c2 = st.columns(2)
     with c1:
         new_name = st.text_input("👤 Name")
@@ -486,14 +633,16 @@ elif page == "🎂 Birthday Manager":
             st.error("Please enter a name!")
 
     st.divider()
-    st.markdown("#### 📋 All Birthdays")
+    st.markdown('<div class="section-title">📋 All Birthdays</div>',
+                unsafe_allow_html=True)
     if birthdays:
         for name, ds in birthdays.items():
             c1, c2 = st.columns([5, 1])
             with c1:
                 st.markdown(f"""
                 <div class="birthday-card">
-                    🎂 <b>{name}</b> — {ds}
+                    🎂 <b style="color:white!important">{name}</b>
+                    <span style="color:#8899aa!important;font-size:12px"> — {ds}</span>
                 </div>""", unsafe_allow_html=True)
             with c2:
                 if st.button("🗑", key=f"del_b_{name}"):
@@ -505,7 +654,8 @@ elif page == "🎂 Birthday Manager":
 
 # ── Page: Stats ──────────────────────────────────────
 elif page == "📊 Stats & Analytics":
-    st.markdown("### 📊 Stats & Analytics")
+    st.markdown('<div class="section-title">📊 Stats & Analytics</div>',
+                unsafe_allow_html=True)
     reminders  = load_json(REMINDERS_FILE)
     moods      = load_json(MOODS_FILE)
     birthdays  = load_json(BIRTHDAYS_FILE)
@@ -516,33 +666,44 @@ elif page == "📊 Stats & Analytics":
                       if k.startswith(this_month))
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("📝 Total Reminders", total)
+    c1.metric("📝 Total", total)
     c2.metric("📅 This Month", month_total)
     c3.metric("🎂 Birthdays", len(birthdays))
-    c4.metric("😊 Mood Entries", len(moods))
+    c4.metric("😊 Moods", len(moods))
 
     st.divider()
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown("#### 😊 Mood History")
+        st.markdown('<div class="section-title">😊 Mood History</div>',
+                    unsafe_allow_html=True)
         if moods:
             for ds, mood in sorted(moods.items(), reverse=True)[:10]:
-                st.markdown(f"**{ds}** — {mood['emoji']} {mood['label']}")
+                st.markdown(f"""
+                <div class="stats-box" style="margin:4px 0;padding:10px 15px">
+                    <span style="color:#8899aa!important;font-size:12px">{ds}</span>
+                    &nbsp; {mood['emoji']}
+                    <b style="color:white!important">{mood['label']}</b>
+                </div>""", unsafe_allow_html=True)
         else:
             st.info("No mood entries yet")
+
     with col2:
-        st.markdown("#### 📝 Recent Reminders")
+        st.markdown('<div class="section-title">📝 Recent Reminders</div>',
+                    unsafe_allow_html=True)
         if reminders:
             for ds, rems in sorted(reminders.items(), reverse=True)[:5]:
-                st.markdown(f"**{ds}**")
-                for r in rems:
-                    st.markdown(f"• {r}")
+                st.markdown(f"""
+                <div class="stats-box" style="margin:4px 0;padding:10px 15px">
+                    <div style="color:#4a9eff!important;font-size:12px;font-weight:600">{ds}</div>
+                    {"".join(f'<div style="color:#c8d8e8!important;font-size:13px">• {r}</div>' for r in rems)}
+                </div>""", unsafe_allow_html=True)
         else:
             st.info("No reminders yet")
 
 # ── Page: Export ─────────────────────────────────────
 elif page == "📤 Export Data":
-    st.markdown("### 📤 Export Your Data")
+    st.markdown('<div class="section-title">📤 Export Your Data</div>',
+                unsafe_allow_html=True)
     reminders = load_json(REMINDERS_FILE)
 
     if reminders:
@@ -580,3 +741,11 @@ elif page == "📤 Export Data":
         )
     else:
         st.info("No mood entries to export yet")
+
+# ── Footer ────────────────────────────────────────────
+st.markdown(f"""
+<div class="footer-bar">
+    <span>🔔 Notifications active &nbsp;|&nbsp; 📁 Auto-saved</span>
+    <span>🕐 {datetime.now().strftime('%H:%M:%S')}</span>
+</div>
+""", unsafe_allow_html=True)
