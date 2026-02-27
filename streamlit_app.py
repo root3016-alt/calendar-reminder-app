@@ -47,21 +47,11 @@ def get_quote():
 
 st.markdown("""
 <style>
-    /* ── Global ── */
-    .stApp {
-        background-color: #0f0f23 !important;
-        color: #eaeaea !important;
-    }
-    [data-testid="stSidebar"] {
-        background-color: #16213e !important;
-    }
+    .stApp { background-color: #0f0f23 !important; color: #eaeaea !important; }
+    [data-testid="stSidebar"] { background-color: #16213e !important; }
     [data-testid="stSidebar"] * { color: #eaeaea !important; }
+    h1,h2,h3,h4,h5,h6,p,label,span { color: #eaeaea !important; }
 
-    h1,h2,h3,h4,h5,h6,p,label,span {
-        color: #eaeaea !important;
-    }
-
-    /* ── Inputs ── */
     .stTextInput input, .stTextArea textarea {
         background-color: #16213e !important;
         color: #eaeaea !important;
@@ -78,8 +68,6 @@ st.markdown("""
         color: #eaeaea !important;
         border: 1px solid #4a9eff55 !important;
     }
-
-    /* ── Buttons ── */
     .stButton > button {
         background-color: #4a9eff !important;
         color: white !important;
@@ -95,8 +83,6 @@ st.markdown("""
         font-weight: bold !important;
         width: 100% !important;
     }
-
-    /* ── Metrics ── */
     [data-testid="metric-container"] {
         background-color: #16213e !important;
         border-radius: 12px !important;
@@ -106,7 +92,6 @@ st.markdown("""
     [data-testid="stMetricValue"] { color: #4a9eff !important; }
     [data-testid="stMetricLabel"] { color: #aaaaaa !important; }
 
-    /* ── Cards ── */
     .header-box {
         background: linear-gradient(135deg, #16213e, #0f3460);
         border-radius: 15px;
@@ -132,10 +117,10 @@ st.markdown("""
         color: #eaeaea !important;
         font-size: 14px;
     }
-    .high  { border-left-color: #ff6b6b !important; }
-    .medium{ border-left-color: #ff9f43 !important; }
-    .low   { border-left-color: #1dd1a1 !important; }
-    .journal { border-left-color: #a29bfe !important; }
+    .high   { border-left-color: #ff6b6b !important; }
+    .medium { border-left-color: #ff9f43 !important; }
+    .low    { border-left-color: #1dd1a1 !important; }
+    .journal{ border-left-color: #a29bfe !important; }
 
     .birthday-card {
         background: #16213e;
@@ -145,105 +130,68 @@ st.markdown("""
         border-left: 4px solid #fd79a8;
         color: #eaeaea !important;
     }
-
-    /* ── Calendar Grid ── */
-    .cal-grid {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 4px;
-        text-align: center;
-        margin: 8px 0;
-    }
-    .cal-cell {
-        padding: 6px 2px;
-        border-radius: 50%;
-        font-size: 13px;
-        color: #eaeaea;
-        min-height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .cal-header {
-        font-weight: bold;
-        color: #4a9eff !important;
-        font-size: 12px;
-    }
-    .cal-today {
-        background: #4a9eff;
-        color: white !important;
-        border-radius: 50%;
-        font-weight: bold;
-    }
-    .cal-selected {
-        background: #1dd1a1;
-        color: white !important;
-        border-radius: 50%;
-        font-weight: bold;
-    }
-    .cal-reminder {
-        color: #ff9f43 !important;
-        font-weight: bold;
-    }
-    .cal-weekend { color: #ff6b6b !important; }
-    .cal-empty { color: transparent; }
-
-    /* ── Mood buttons ── */
-    .mood-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 8px;
-        margin: 10px 0;
-    }
     .mood-item {
         background: #16213e;
         border-radius: 10px;
         padding: 10px 5px;
         text-align: center;
         border: 1px solid #4a9eff33;
-        cursor: pointer;
+        margin-bottom: 5px;
     }
 
-    /* ── Nav tabs ── */
-    .nav-grid {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 6px;
-        margin-bottom: 15px;
+    /* ── Calendar Table ── */
+    .cal-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
     }
-    .nav-item {
-        background: #16213e;
-        border-radius: 8px;
-        padding: 8px 4px;
+    .cal-table th {
         text-align: center;
-        font-size: 11px;
-        cursor: pointer;
-        border: 1px solid #4a9eff33;
-        color: #eaeaea !important;
-    }
-    .nav-active {
-        background: #4a9eff !important;
-        color: white !important;
+        padding: 8px 2px;
+        color: #4a9eff;
+        font-size: 13px;
         font-weight: bold;
     }
+    .cal-table td {
+        text-align: center;
+        padding: 8px 2px;
+        font-size: 14px;
+        color: #eaeaea;
+        width: 14.28%;
+    }
+    .day-today {
+        background: #4a9eff;
+        color: white !important;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+    .day-selected {
+        background: #1dd1a1;
+        color: white !important;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+    .day-reminder { color: #ff9f43 !important; font-weight: bold; }
+    .day-weekend  { color: #ff6b6b !important; }
+    .day-empty    { color: transparent; }
 
-    /* ── Scrollbar ── */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: #0f0f23; }
     ::-webkit-scrollbar-thumb { background: #4a9eff; border-radius: 2px; }
-
-    /* ── Mobile responsive ── */
-    @media (max-width: 768px) {
-        .header-box { padding: 15px; }
-        .header-box h1 { font-size: 1.4rem !important; }
-        .cal-cell { font-size: 12px; padding: 4px 1px; }
-        .mood-grid { grid-template-columns: repeat(4, 1fr); }
-        .nav-grid { grid-template-columns: repeat(3, 1fr); }
-    }
 </style>
 """, unsafe_allow_html=True)
 
-# ── Header ──────────────────────────────────────────
+# ── Header ───────────────────────────────────────────
 st.markdown("""
 <div class="header-box">
     <h1 style="margin:0;color:white!important;font-size:1.6rem">
@@ -267,11 +215,9 @@ if "page" not in st.session_state:
     st.session_state.page = "📅 Calendar"
 
 pages = ["📅 Calendar", "😊 Mood", "🎂 Birthdays", "📊 Stats", "📤 Export"]
-
 cols = st.columns(5)
 for i, p in enumerate(pages):
     with cols[i]:
-        active = "nav-active" if st.session_state.page == p else ""
         if st.button(p, key=f"nav_{p}", use_container_width=True):
             st.session_state.page = p
             st.rerun()
@@ -290,6 +236,8 @@ with info_cols[0]:
 with info_cols[1]:
     if today_mood:
         st.markdown(f"**Mood:** {today_mood['emoji']} {today_mood['label']}")
+    else:
+        st.markdown("**Mood:** Not logged yet")
 
 st.divider()
 
@@ -303,43 +251,46 @@ if page == "📅 Calendar":
     date_str = selected_date.strftime("%Y-%m-%d")
     reminders_data = load_json(REMINDERS_FILE)
 
-    # ── Proper Calendar Grid using HTML ──
+    # ── HTML Table Calendar ──
     st.markdown(f"#### 📆 {selected_date.strftime('%B %Y')}")
     cal = calendar.monthcalendar(selected_date.year, selected_date.month)
 
-    cal_html = '<div class="cal-grid">'
-    for d in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]:
-        cal_html += f'<div class="cal-cell cal-header">{d}</div>'
-
+    cal_html = """
+    <table class="cal-table">
+    <tr>
+        <th>Mon</th><th>Tue</th><th>Wed</th>
+        <th>Thu</th><th>Fri</th>
+        <th style="color:#ff6b6b">Sat</th>
+        <th style="color:#ff6b6b">Sun</th>
+    </tr>
+    """
     for week in cal:
+        cal_html += "<tr>"
         for i, day in enumerate(week):
             if day == 0:
-                cal_html += '<div class="cal-cell cal-empty">·</div>'
+                cal_html += '<td><span class="day-empty">·</span></td>'
             else:
                 day_date = date(selected_date.year, selected_date.month, day)
                 day_str_loop = day_date.strftime("%Y-%m-%d")
                 has_reminder = day_str_loop in reminders_data
-                is_today = day_date == date.today()
-                is_selected = day_date == selected_date
-                is_weekend = i >= 5
+                is_today     = day_date == date.today()
+                is_selected  = day_date == selected_date
+                is_weekend   = i >= 5
 
                 if is_today:
-                    cls = "cal-cell cal-today"
+                    cal_html += f'<td><span class="day-today">{day}</span></td>'
                 elif is_selected:
-                    cls = "cal-cell cal-selected"
+                    cal_html += f'<td><span class="day-selected">{day}</span></td>'
                 elif has_reminder:
-                    cls = "cal-cell cal-reminder"
+                    cal_html += f'<td><span class="day-reminder">●{day}</span></td>'
                 elif is_weekend:
-                    cls = "cal-cell cal-weekend"
+                    cal_html += f'<td><span class="day-weekend">{day}</span></td>'
                 else:
-                    cls = "cal-cell"
-
-                prefix = "🟡" if has_reminder and not is_today and not is_selected else ""
-                cal_html += f'<div class="{cls}">{prefix}{day}</div>'
-
-    cal_html += '</div>'
+                    cal_html += f'<td>{day}</td>'
+        cal_html += "</tr>"
+    cal_html += "</table>"
     st.markdown(cal_html, unsafe_allow_html=True)
-    st.markdown("🔵 Today &nbsp; 🟢 Selected &nbsp; 🟡 Has reminder &nbsp; 🔴 Weekend")
+    st.markdown("🔵 Today &nbsp;&nbsp; 🟢 Selected &nbsp;&nbsp; 🟠 Has reminder &nbsp;&nbsp; 🔴 Weekend")
 
     st.divider()
 
@@ -351,11 +302,10 @@ if page == "📅 Calendar":
     if day_reminders:
         for i, r in enumerate(day_reminders):
             cls = "reminder-card"
-            if "🔴 High" in r: cls += " high"
+            if "🔴 High"   in r: cls += " high"
             elif "🟡 Medium" in r: cls += " medium"
-            elif "🟢 Low" in r: cls += " low"
+            elif "🟢 Low"    in r: cls += " low"
             elif "📓 Journal" in r: cls += " journal"
-
             c1, c2 = st.columns([5, 1])
             with c1:
                 st.markdown(f'<div class="{cls}">{r}</div>',
@@ -372,10 +322,9 @@ if page == "📅 Calendar":
 
     st.divider()
     st.markdown("### ➕ Add Reminder")
-
     priority = st.selectbox("Priority", ["🟡 Medium", "🔴 High", "🟢 Low"])
     time_val = st.text_input("⏰ Time (HH:MM)", placeholder="e.g. 14:30")
-    note = st.text_input("📌 Note", placeholder="e.g. Team Meeting")
+    note     = st.text_input("📌 Note", placeholder="e.g. Team Meeting")
 
     if st.button("➕ Add Reminder", type="primary", use_container_width=True):
         if note.strip():
@@ -396,21 +345,21 @@ elif page == "😊 Mood":
     st.markdown("### 😊 How are you feeling today?")
 
     MOODS = [
-        ("😄", "Happy", "#f9ca24"),
-        ("😊", "Good", "#6ab04c"),
+        ("😄", "Happy",   "#f9ca24"),
+        ("😊", "Good",    "#6ab04c"),
         ("😐", "Neutral", "#95afc0"),
-        ("😔", "Sad", "#778ca3"),
-        ("😤", "Stressed", "#e55039"),
-        ("😴", "Tired", "#a29bfe"),
+        ("😔", "Sad",     "#778ca3"),
+        ("😤", "Stressed","#e55039"),
+        ("😴", "Tired",   "#a29bfe"),
         ("🤩", "Excited", "#fd79a8"),
     ]
     MOOD_MESSAGES = {
-        "Happy": "Amazing! Happiness is contagious — share it! 💛",
-        "Good": "Great! A good day is a gift 🌈",
+        "Happy":   "Amazing! Happiness is contagious — share it! 💛",
+        "Good":    "Great! A good day is a gift 🌈",
         "Neutral": "That's okay 🌥️ Be kind to yourself.",
-        "Sad": "It's okay 💙 Tough times don't last.",
-        "Stressed": "One thing at a time 🧘 You've got this!",
-        "Tired": "Rest is productive too 😴",
+        "Sad":     "It's okay 💙 Tough times don't last.",
+        "Stressed":"One thing at a time 🧘 You've got this!",
+        "Tired":   "Rest is productive too 😴",
         "Excited": "Woohoo! 🎉 Channel that energy!",
     }
 
@@ -437,9 +386,9 @@ elif page == "😊 Mood":
     st.markdown("### 📓 Journal")
     st.caption("💡 Saved journal appears in today's reminders!")
 
-    mood_notes = load_json(MOOD_NOTES_FILE)
+    mood_notes    = load_json(MOOD_NOTES_FILE)
     existing_note = mood_notes.get(today_str, "")
-    journal_text = st.text_area(
+    journal_text  = st.text_area(
         "journal", value=existing_note, height=180,
         label_visibility="collapsed",
         placeholder="Write about your day here..."
@@ -468,18 +417,18 @@ elif page == "😊 Mood":
 elif page == "🎂 Birthdays":
     st.markdown("### 🎂 Birthday Manager")
     birthdays = load_json(BIRTHDAYS_FILE)
-    today = datetime.today()
+    today     = datetime.today()
 
     st.markdown("#### 🔔 Upcoming (30 days)")
     upcoming = []
     for name, ds in birthdays.items():
         try:
-            bday = datetime.strptime(ds, "%Y-%m-%d")
+            bday      = datetime.strptime(ds, "%Y-%m-%d")
             this_year = bday.replace(year=today.year)
             if this_year < today:
                 this_year = this_year.replace(year=today.year + 1)
             diff = (this_year - today).days
-            age = today.year - bday.year
+            age  = today.year - bday.year
             if diff <= 30:
                 upcoming.append((name, ds, diff, age + 1))
         except:
@@ -534,11 +483,11 @@ elif page == "🎂 Birthdays":
 elif page == "📊 Stats":
     st.markdown("### 📊 Stats & Analytics")
     reminders = load_json(REMINDERS_FILE)
-    moods = load_json(MOODS_FILE)
+    moods     = load_json(MOODS_FILE)
     birthdays = load_json(BIRTHDAYS_FILE)
 
-    total = sum(len(v) for v in reminders.values())
-    this_month = datetime.today().strftime("%Y-%m")
+    total       = sum(len(v) for v in reminders.values())
+    this_month  = datetime.today().strftime("%Y-%m")
     month_total = sum(len(v) for k, v in reminders.items()
                       if k.startswith(this_month))
 
