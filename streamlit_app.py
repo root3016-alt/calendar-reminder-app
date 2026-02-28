@@ -141,25 +141,45 @@ st.markdown("""
 h1,h2,h3,h4,h5,h6 { color:white !important; font-weight:700 !important; }
 p,label,span,div   { color:#c8d8e8 !important; }
 
-.stTextInput input,.stTextArea textarea {
+/* ── Inputs — make sure clickable ── */
+.stTextInput { position:relative; z-index:1 !important; }
+.stTextInput input {
     background:#16213e !important; color:#eaeaea !important;
     border:1px solid #4a9eff44 !important; border-radius:10px !important;
-    font-size:14px !important;
+    font-size:14px !important; position:relative !important;
+    z-index:1 !important; pointer-events:auto !important;
+}
+.stTextArea { position:relative; z-index:1 !important; }
+.stTextArea textarea {
+    background:#16213e !important; color:#eaeaea !important;
+    border:1px solid #4a9eff44 !important; border-radius:10px !important;
+    font-size:14px !important; position:relative !important;
+    z-index:1 !important; pointer-events:auto !important;
+}
+[data-testid="stDateInput"] {
+    position:relative; z-index:1 !important;
 }
 [data-testid="stDateInput"] input {
     background:#16213e !important; color:#eaeaea !important;
     border:1px solid #4a9eff44 !important; border-radius:10px !important;
+    pointer-events:auto !important; z-index:1 !important;
+}
+[data-testid="stSelectbox"] {
+    position:relative; z-index:1 !important;
 }
 [data-testid="stSelectbox"] > div > div {
     background:#16213e !important; color:#eaeaea !important;
     border:1px solid #4a9eff44 !important; border-radius:10px !important;
+    pointer-events:auto !important;
 }
+.stButton { position:relative; z-index:1 !important; }
 .stButton > button {
     background:linear-gradient(135deg,#4a9eff,#2980b9) !important;
     color:white !important; border:none !important;
     border-radius:10px !important; font-weight:600 !important;
     box-shadow:0 4px 15px #4a9eff33 !important;
-    width:100% !important;
+    width:100% !important; pointer-events:auto !important;
+    position:relative !important; z-index:1 !important;
 }
 .stDownloadButton > button {
     background:linear-gradient(135deg,#1dd1a1,#00b894) !important;
@@ -228,39 +248,6 @@ hr { border-color:#4a9eff22 !important; margin:20px 0 !important; }
     padding:12px 15px; margin:5px 0; border:1px solid #4a9eff22;
 }
 
-/* ── FIXED: >> sidebar button ── */
-[data-testid="collapsedControl"] {
-    background: #4a9eff !important;
-    border-radius: 0 10px 10px 0 !important;
-    width: 28px !important;
-    position: relative !important;
-    overflow: visible !important;
-}
-[data-testid="collapsedControl"] button {
-    opacity: 0 !important;
-    width: 28px !important;
-    height: 100% !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    z-index: 10 !important;
-    cursor: pointer !important;
-}
-[data-testid="collapsedControl"]::after {
-    content: ">>" !important;
-    color: white !important;
-    font-size: 14px !important;
-    font-weight: 900 !important;
-    font-family: Arial, sans-serif !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    pointer-events: none !important;
-    z-index: 1 !important;
-    line-height: 1 !important;
-}
-
 ::-webkit-scrollbar { width:5px; }
 ::-webkit-scrollbar-track { background:#0d1117; }
 ::-webkit-scrollbar-thumb { background:#4a9eff66; border-radius:3px; }
@@ -272,6 +259,32 @@ hr { border-color:#4a9eff22 !important; margin:20px 0 !important; }
     [data-testid="stMetricValue"] { font-size:1.5rem !important; }
 }
 </style>
+
+<script>
+// Replace sidebar button text with >>
+function fixSidebarBtn() {
+    const btns = window.parent.document.querySelectorAll(
+        '[data-testid="collapsedControl"] button, [data-testid="collapsedControl"]'
+    );
+    btns.forEach(btn => {
+        if (btn.innerText.includes('keyboard')) {
+            btn.innerText = '>>';
+            btn.style.fontSize = '16px';
+            btn.style.fontWeight = '900';
+            btn.style.color = 'white';
+            btn.style.background = '#4a9eff';
+            btn.style.border = 'none';
+            btn.style.borderRadius = '0 8px 8px 0';
+            btn.style.cursor = 'pointer';
+        }
+    });
+}
+// Run on load and observe changes
+window.addEventListener('load', function() {
+    fixSidebarBtn();
+    setInterval(fixSidebarBtn, 500);
+});
+</script>
 """, unsafe_allow_html=True)
 
 now        = datetime.now()
@@ -601,3 +614,37 @@ st.markdown(f"""
     <span style="color:#4a9eff!important">🕐 {datetime.now().strftime('%H:%M:%S')}</span>
 </div>
 """, unsafe_allow_html=True)
+
+# JavaScript to fix sidebar button
+st.components.v1.html("""
+<script>
+function fixBtn() {
+    try {
+        var doc = window.parent.document;
+        var els = doc.querySelectorAll('[data-testid="collapsedControl"]');
+        els.forEach(function(el) {
+            el.style.background = '#4a9eff';
+            el.style.borderRadius = '0 8px 8px 0';
+            var btns = el.querySelectorAll('button, span, svg');
+            btns.forEach(function(b) {
+                if (b.tagName !== 'BUTTON') {
+                    b.style.display = 'none';
+                } else {
+                    b.innerHTML = '>>';
+                    b.style.color = 'white';
+                    b.style.fontSize = '16px';
+                    b.style.fontWeight = '900';
+                    b.style.fontFamily = 'Arial';
+                    b.style.background = 'transparent';
+                    b.style.border = 'none';
+                    b.style.width = '100%';
+                    b.style.height = '100%';
+                    b.style.cursor = 'pointer';
+                }
+            });
+        });
+    } catch(e) {}
+}
+setInterval(fixBtn, 300);
+</script>
+""", height=0)
