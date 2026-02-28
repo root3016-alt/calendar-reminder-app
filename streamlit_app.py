@@ -227,6 +227,28 @@ hr { border-color:#4a9eff22 !important; margin:20px 0 !important; }
     background:#1a2744; border-radius:12px;
     padding:12px 15px; margin:5px 0; border:1px solid #4a9eff22;
 }
+
+/* ── FIX: Sidebar toggle button on mobile ── */
+[data-testid="collapsedControl"] {
+    background: #4a9eff !important;
+    border-radius: 0 8px 8px 0 !important;
+    width: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+[data-testid="collapsedControl"] * {
+    display: none !important;
+}
+[data-testid="collapsedControl"]::after {
+    content: ">>" !important;
+    color: white !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    font-family: Arial, sans-serif !important;
+    display: block !important;
+}
+
 ::-webkit-scrollbar { width:5px; }
 ::-webkit-scrollbar-track { background:#0d1117; }
 ::-webkit-scrollbar-thumb { background:#4a9eff66; border-radius:3px; }
@@ -311,8 +333,6 @@ with st.sidebar:
 # ── Page: Calendar & Reminders ───────────────────────
 if page == "📅 Calendar & Reminders":
 
-    # On mobile: single column. On laptop: two columns.
-    # We detect by using full width and letting CSS handle it.
     st.markdown('<div class="section-title">📅 Select Date</div>',
                 unsafe_allow_html=True)
     selected_date  = st.date_input("d", value=date.today(),
