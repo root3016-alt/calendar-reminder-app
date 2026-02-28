@@ -228,25 +228,37 @@ hr { border-color:#4a9eff22 !important; margin:20px 0 !important; }
     padding:12px 15px; margin:5px 0; border:1px solid #4a9eff22;
 }
 
-/* ── FIX: Sidebar toggle button on mobile ── */
+/* ── FIXED: >> sidebar button ── */
 [data-testid="collapsedControl"] {
     background: #4a9eff !important;
-    border-radius: 0 8px 8px 0 !important;
-    width: 32px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    border-radius: 0 10px 10px 0 !important;
+    width: 28px !important;
+    position: relative !important;
+    overflow: visible !important;
 }
-[data-testid="collapsedControl"] * {
-    display: none !important;
+[data-testid="collapsedControl"] button {
+    opacity: 0 !important;
+    width: 28px !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 10 !important;
+    cursor: pointer !important;
 }
 [data-testid="collapsedControl"]::after {
     content: ">>" !important;
     color: white !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
+    font-size: 14px !important;
+    font-weight: 900 !important;
     font-family: Arial, sans-serif !important;
-    display: block !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+    line-height: 1 !important;
 }
 
 ::-webkit-scrollbar { width:5px; }
@@ -267,7 +279,6 @@ today_str  = datetime.today().strftime("%Y-%m-%d")
 moods_all  = load_json(MOODS_FILE)
 mood_today = moods_all.get(today_str)
 
-# ── Header ───────────────────────────────────────────
 st.markdown(f"""
 <div class="header-box">
     <h1 style="margin:0;color:white!important;font-size:1.8rem;font-weight:800">
@@ -288,7 +299,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# ── Sidebar ───────────────────────────────────────────
 with st.sidebar:
     st.markdown("""
     <div style="text-align:center;padding:10px 0 20px">
@@ -330,30 +340,21 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-# ── Page: Calendar & Reminders ───────────────────────
 if page == "📅 Calendar & Reminders":
-
-    st.markdown('<div class="section-title">📅 Select Date</div>',
-                unsafe_allow_html=True)
-    selected_date  = st.date_input("d", value=date.today(),
-                                   label_visibility="collapsed")
+    st.markdown('<div class="section-title">📅 Select Date</div>', unsafe_allow_html=True)
+    selected_date  = st.date_input("d", value=date.today(), label_visibility="collapsed")
     date_str       = selected_date.strftime("%Y-%m-%d")
     reminders_data = load_json(REMINDERS_FILE)
 
-    st.markdown(f'<div class="section-title">📆 {selected_date.strftime("%B %Y")}</div>',
-                unsafe_allow_html=True)
-    st.markdown(build_calendar_html(selected_date, reminders_data),
-                unsafe_allow_html=True)
+    st.markdown(f'<div class="section-title">📆 {selected_date.strftime("%B %Y")}</div>', unsafe_allow_html=True)
+    st.markdown(build_calendar_html(selected_date, reminders_data), unsafe_allow_html=True)
     st.markdown("""
     <div style="font-size:11px;color:#8899aa!important;margin:5px 0 15px">
         🔵 Today &nbsp; 🟢 Selected &nbsp; 🟠 Reminder &nbsp; 🔴 Weekend
-    </div>
-    """, unsafe_allow_html=True)
+    </div>""", unsafe_allow_html=True)
 
     st.divider()
-
-    st.markdown(f'<div class="section-title">📝 Reminders — {date_str}</div>',
-                unsafe_allow_html=True)
+    st.markdown(f'<div class="section-title">📝 Reminders — {date_str}</div>', unsafe_allow_html=True)
     reminders     = load_json(REMINDERS_FILE)
     day_reminders = reminders.get(date_str, [])
 
@@ -366,8 +367,7 @@ if page == "📅 Calendar & Reminders":
             elif "📓 Journal" in r: cls += " journal"
             c1, c2 = st.columns([5, 1])
             with c1:
-                st.markdown(f'<div class="{cls}">{r}</div>',
-                            unsafe_allow_html=True)
+                st.markdown(f'<div class="{cls}">{r}</div>', unsafe_allow_html=True)
             with c2:
                 if st.button("🗑", key=f"del_{i}_{date_str}"):
                     reminders[date_str].remove(r)
@@ -379,17 +379,14 @@ if page == "📅 Calendar & Reminders":
         st.info("📭 No reminders for this day")
 
     st.divider()
-    st.markdown('<div class="section-title">➕ Add Reminder</div>',
-                unsafe_allow_html=True)
-
+    st.markdown('<div class="section-title">➕ Add Reminder</div>', unsafe_allow_html=True)
     priority = st.selectbox("Priority", ["🟡 Medium", "🔴 High", "🟢 Low"])
     time_val = st.text_input("⏰ Time (HH:MM)", placeholder="e.g. 14:30")
     note     = st.text_input("📌 Note", placeholder="e.g. Team Meeting")
 
     if st.button("➕ Add Reminder", type="primary", use_container_width=True):
         if note.strip():
-            rt = (f"{time_val} | {priority} | {note}"
-                  if time_val.strip() else f"{priority} | {note}")
+            rt = (f"{time_val} | {priority} | {note}" if time_val.strip() else f"{priority} | {note}")
             if date_str not in reminders:
                 reminders[date_str] = []
             reminders[date_str].append(rt)
@@ -399,10 +396,8 @@ if page == "📅 Calendar & Reminders":
         else:
             st.error("Please enter a note!")
 
-# ── Page: Mood Tracker ───────────────────────────────
 elif page == "😊 Mood Tracker":
-    st.markdown('<div class="section-title">😊 How are you feeling today?</div>',
-                unsafe_allow_html=True)
+    st.markdown('<div class="section-title">😊 How are you feeling today?</div>', unsafe_allow_html=True)
     MOODS = [
         ("😄","Happy","#f9ca24"),("😊","Good","#6ab04c"),
         ("😐","Neutral","#95afc0"),("😔","Sad","#778ca3"),
@@ -410,13 +405,13 @@ elif page == "😊 Mood Tracker":
         ("🤩","Excited","#fd79a8"),
     ]
     MOOD_MESSAGES = {
-        "Happy":   "Amazing! Happiness is contagious — share it! 💛",
-        "Good":    "Great! A good day is a gift 🌈",
-        "Neutral": "That's okay 🌥️ Be kind to yourself.",
-        "Sad":     "It's okay 💙 Tough times don't last.",
+        "Happy":"Amazing! Happiness is contagious — share it! 💛",
+        "Good":"Great! A good day is a gift 🌈",
+        "Neutral":"That's okay 🌥️ Be kind to yourself.",
+        "Sad":"It's okay 💙 Tough times don't last.",
         "Stressed":"One thing at a time 🧘 You've got this!",
-        "Tired":   "Rest is productive too 😴",
-        "Excited": "Woohoo! 🎉 Channel that energy!",
+        "Tired":"Rest is productive too 😴",
+        "Excited":"Woohoo! 🎉 Channel that energy!",
     }
     moods_data = load_json(MOODS_FILE)
     existing   = moods_data.get(today_str)
@@ -430,8 +425,7 @@ elif page == "😊 Mood Tracker":
             <div class="mood-btn">
                 <div style="font-size:1.8rem">{emoji}</div>
                 <div style="font-size:0.7rem;color:#8899aa!important">{label}</div>
-            </div>
-            """, unsafe_allow_html=True)
+            </div>""", unsafe_allow_html=True)
             if st.button("✓", key=f"mood_{label}", use_container_width=True):
                 moods_data[today_str] = {"emoji":emoji,"label":label}
                 save_json(MOODS_FILE, moods_data)
@@ -439,8 +433,7 @@ elif page == "😊 Mood Tracker":
                 st.rerun()
 
     st.divider()
-    st.markdown('<div class="section-title">📓 Journal</div>',
-                unsafe_allow_html=True)
+    st.markdown('<div class="section-title">📓 Journal</div>', unsafe_allow_html=True)
     st.caption("💡 Your journal will appear in today's reminder list!")
     mood_notes    = load_json(MOOD_NOTES_FILE)
     existing_note = mood_notes.get(today_str,"")
@@ -463,15 +456,12 @@ elif page == "😊 Mood Tracker":
         else:
             st.error("Please write something first!")
 
-# ── Page: Birthday Manager ───────────────────────────
 elif page == "🎂 Birthday Manager":
-    st.markdown('<div class="section-title">🎂 Birthday Manager</div>',
-                unsafe_allow_html=True)
+    st.markdown('<div class="section-title">🎂 Birthday Manager</div>', unsafe_allow_html=True)
     birthdays = load_json(BIRTHDAYS_FILE)
     today_dt  = datetime.today()
 
-    st.markdown('<div class="section-title">🔔 Upcoming (30 days)</div>',
-                unsafe_allow_html=True)
+    st.markdown('<div class="section-title">🔔 Upcoming (30 days)</div>', unsafe_allow_html=True)
     upcoming = []
     for name, ds in birthdays.items():
         try:
@@ -500,8 +490,7 @@ elif page == "🎂 Birthday Manager":
         st.info("No upcoming birthdays in next 30 days")
 
     st.divider()
-    st.markdown('<div class="section-title">➕ Add Birthday</div>',
-                unsafe_allow_html=True)
+    st.markdown('<div class="section-title">➕ Add Birthday</div>', unsafe_allow_html=True)
     new_name = st.text_input("👤 Name")
     new_date = st.date_input("🎂 Date", value=date.today())
     if st.button("🎂 Save Birthday", type="primary", use_container_width=True):
@@ -514,8 +503,7 @@ elif page == "🎂 Birthday Manager":
             st.error("Please enter a name!")
 
     st.divider()
-    st.markdown('<div class="section-title">📋 All Birthdays</div>',
-                unsafe_allow_html=True)
+    st.markdown('<div class="section-title">📋 All Birthdays</div>', unsafe_allow_html=True)
     if birthdays:
         for name,ds in birthdays.items():
             c1,c2 = st.columns([5,1])
@@ -533,10 +521,8 @@ elif page == "🎂 Birthday Manager":
     else:
         st.info("No birthdays saved yet")
 
-# ── Page: Stats ──────────────────────────────────────
 elif page == "📊 Stats & Analytics":
-    st.markdown('<div class="section-title">📊 Stats & Analytics</div>',
-                unsafe_allow_html=True)
+    st.markdown('<div class="section-title">📊 Stats & Analytics</div>', unsafe_allow_html=True)
     reminders = load_json(REMINDERS_FILE)
     moods     = load_json(MOODS_FILE)
     birthdays = load_json(BIRTHDAYS_FILE)
@@ -552,8 +538,7 @@ elif page == "📊 Stats & Analytics":
     c4.metric("😊 Moods", len(moods))
 
     st.divider()
-    st.markdown('<div class="section-title">😊 Mood History</div>',
-                unsafe_allow_html=True)
+    st.markdown('<div class="section-title">😊 Mood History</div>', unsafe_allow_html=True)
     if moods:
         for ds,mood in sorted(moods.items(),reverse=True)[:10]:
             st.markdown(f"""
@@ -566,8 +551,7 @@ elif page == "📊 Stats & Analytics":
         st.info("No mood entries yet")
 
     st.divider()
-    st.markdown('<div class="section-title">📝 Recent Reminders</div>',
-                unsafe_allow_html=True)
+    st.markdown('<div class="section-title">📝 Recent Reminders</div>', unsafe_allow_html=True)
     if reminders:
         for ds,rems in sorted(reminders.items(),reverse=True)[:5]:
             st.markdown(f"""
@@ -578,10 +562,8 @@ elif page == "📊 Stats & Analytics":
     else:
         st.info("No reminders yet")
 
-# ── Page: Export ─────────────────────────────────────
 elif page == "📤 Export Data":
-    st.markdown('<div class="section-title">📤 Export Your Data</div>',
-                unsafe_allow_html=True)
+    st.markdown('<div class="section-title">📤 Export Your Data</div>', unsafe_allow_html=True)
     reminders = load_json(REMINDERS_FILE)
     if reminders:
         output = io.StringIO()
@@ -596,6 +578,7 @@ elif page == "📤 Export Data":
                            use_container_width=True)
     else:
         st.info("No reminders to export yet")
+
     st.divider()
     moods = load_json(MOODS_FILE)
     if moods:
@@ -612,7 +595,6 @@ elif page == "📤 Export Data":
     else:
         st.info("No mood entries to export yet")
 
-# ── Footer ────────────────────────────────────────────
 st.markdown(f"""
 <div class="footer-bar">
     <span style="color:#8899aa!important">🔔 Notifications active &nbsp;|&nbsp; 📁 Auto-saved</span>
