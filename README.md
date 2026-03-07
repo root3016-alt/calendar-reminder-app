@@ -11,7 +11,7 @@
 
 ## 🌐 Live Demo
 
-### 👉 [https://rcdwx5zu4scbvffx4.streamlit.app](https://rcdwx5zu4scbvffx4.streamlit.app)
+### 👉 [https://rcdwx5zu4scbvffx4.streamlit.app](https://rcdwx5zu4scbvffx4.streamlit.app)](https://calendar-reminder-app-cgdymrcdwx5zu4scbvffx4.streamlit.app/)
 
 ## ✨ Features
 
